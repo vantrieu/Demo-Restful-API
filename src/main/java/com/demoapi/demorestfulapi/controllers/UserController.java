@@ -24,64 +24,73 @@ import com.demoapi.demorestfulapi.repositories.UserRepository;
 @RequestMapping("/api/v1/user")
 public class UserController {
 
-@Autowired
-private UserRepository userRepository;
+	@Autowired
+	private UserRepository userRepository;
 
 	/**
-	* Get all users list.
-	* @return the list
-	*/
+	 * Get all users list.
+	 * 
+	 * @return the list
+	 */
 	@GetMapping("/list")
 	public List<User> getAllUsers() {
 		return userRepository.findAll();
 	}
 
 	/**
-	* Gets users by id.
-	* @param userId the user id
-	* @return the users by id
-	* @throws ResourceNotFoundException the resource not found exception
-	*/
+	 * Gets users by id.
+	 * 
+	 * @param userId the user id
+	 * @return the users by id
+	 * @throws ResourceNotFoundException the resource not found exception
+	 */
 	@GetMapping("/get/{id}")
 	public ResponseEntity<User> getUserById(@PathVariable(value = "id") Long userId) throws ResourceNotFoundException {
-		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found on:" + userId));
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found on:" + userId));
 		return ResponseEntity.ok().body(user);
 	}
 
 	/**
-	* Create user user.
-	* @param user the user
-	* @return the user
-	*/
+	 * Create user user.
+	 * 
+	 * @param user the user
+	 * @return the user
+	 */
 	@PostMapping("/add")
 	public User create(@Validated @RequestBody User user) {
 		return userRepository.save(user);
 	}
 
 	/**
-	* Update user response entity.
-	* @param userId the user id
-	* @param userDetails the user details
-	* @return the response entity
-	* @throws ResourceNotFoundException the resource not found exception
-	*/
+	 * Update user response entity.
+	 * 
+	 * @param userId      the user id
+	 * @param userDetails the user details
+	 * @return the response entity
+	 * @throws ResourceNotFoundException the resource not found exception
+	 */
 	@PutMapping("/update/{id}")
-	public ResponseEntity<User> update(@PathVariable(value = "id") Long userId, @Validated @RequestBody User userDetails) throws ResourceNotFoundException {
-		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found on:" + userId));
+	public ResponseEntity<User> update(@PathVariable(value = "id") Long userId,
+			@Validated @RequestBody User userDetails) throws ResourceNotFoundException {
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found on:" + userId));
 		user.setPassword(userDetails.getPassword());
 		final User updatedUser = userRepository.save(user);
 		return ResponseEntity.ok(updatedUser);
 	}
 
 	/**
-	* Delete user map.
-	* @param userId the user id
-	* @return the map
-	* @throws Exception the exception
-	*/
+	 * Delete user map.
+	 * 
+	 * @param userId the user id
+	 * @return the map
+	 * @throws Exception the exception
+	 */
 	@DeleteMapping("/delete/{id}")
 	public Map<String, Boolean> delete(@PathVariable(value = "id") Long userId) throws Exception {
-		User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User not found on:" + userId));
+		User user = userRepository.findById(userId)
+				.orElseThrow(() -> new ResourceNotFoundException("User not found on:" + userId));
 		userRepository.delete(user);
 		Map<String, Boolean> response = new HashMap<>();
 		response.put("deleted", Boolean.TRUE);
@@ -89,11 +98,12 @@ private UserRepository userRepository;
 	}
 
 	/**
-	* Sign in
-	* @param username
-	* @param password
-	* @return User
-	*/
+	 * Sign in
+	 * 
+	 * @param username
+	 * @param password
+	 * @return User
+	 */
 	@PostMapping("/signin")
 	public ResponseEntity<User> signIn(@Validated @RequestBody User u) {
 		User user = userRepository.findByUsernameAndPassword(u.getUsername(), u.getPassword());
