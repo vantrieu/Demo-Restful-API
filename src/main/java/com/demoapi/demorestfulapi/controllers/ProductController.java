@@ -1,8 +1,11 @@
 package com.demoapi.demorestfulapi.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 
 import javax.sound.midi.Patch;
 
@@ -51,5 +55,17 @@ public class ProductController {
 	@PostMapping("/create")
 	public Product create(@Validated @RequestBody Product product) throws IOException {
 		return productRespository.save(product);
+	}
+
+	@GetMapping("/list-product")
+	public List<Product> viewlist(){
+		return productRespository.findAll();
+	}
+
+	@GetMapping("/get/{id}")
+	public ResponseEntity<Product> getProductById(@PathVariable(value = "id") Long productId) throws ResourceNotFoundException {
+		Product product = productRespository.findById(productId)
+					.orElseThrow(() -> new ResourceNotFoundException("Product not found on:" + productId));
+		return ResponseEntity.ok().body(product);
 	}
 }
