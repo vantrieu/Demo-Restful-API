@@ -20,7 +20,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.demoapi.demorestfulapi.entities.Product;
 import com.demoapi.demorestfulapi.exceptions.ResourceNotFoundException;
@@ -34,7 +36,7 @@ public class ProductController {
 	private ProductRespository productRespository;
 
 	@PostMapping("/upload-image")
-	public String upload(@Validated @RequestParam("image") MultipartFile multipartFile) throws IOException {
+	public Map<String, String> upload(@Validated @RequestParam("image") MultipartFile multipartFile) throws IOException {
 		String fileName = StringUtils.cleanPath(multipartFile.getOriginalFilename());
 		String uploadDir = Paths.get("").toAbsolutePath().toString() + "/src/main/resources/public" ;
 		Path uploadPath = Paths.get(uploadDir);
@@ -47,7 +49,9 @@ public class ProductController {
 		} catch (Exception e) {
 			throw new IOException("Could not save upload file: " + fileName);
 		}
-		return fileName;
+		HashMap<String, String> map = new HashMap<>();
+		map.put("imgurl", fileName);
+		return map;
 	}
 	
 	@PostMapping("/create")
